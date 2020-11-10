@@ -28,11 +28,6 @@ class Band
     private $style;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $picture;
-
-    /**
      * @ORM\Column(type="date")
      */
     private $yearOfCreation;
@@ -41,6 +36,11 @@ class Band
      * @ORM\Column(type="string", length=255)
      */
     private $lastAlbumName;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Picture::class)
+     */
+    private $picture;
 
     public function getId(): ?int
     {
@@ -71,18 +71,6 @@ class Band
         return $this;
     }
 
-    public function getPicture(): ?string
-    {
-        return $this->picture;
-    }
-
-    public function setPicture(string $picture): self
-    {
-        $this->picture = $picture;
-
-        return $this;
-    }
-
     public function getYearOfCreation(): ?\DateTimeInterface
     {
         return $this->yearOfCreation;
@@ -103,6 +91,18 @@ class Band
     public function setLastAlbumName(string $lastAlbumName): self
     {
         $this->lastAlbumName = $lastAlbumName;
+
+        return $this;
+    }
+
+    public function getPicture(): ?Picture
+    {
+        return $this->picture;
+    }
+
+    public function setPicture(?Picture $picture): self
+    {
+        $this->picture = $picture;
 
         return $this;
     }
