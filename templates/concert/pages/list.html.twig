@@ -1,0 +1,29 @@
+{% extends('concert/base.html.twig') %}
+
+    {% block header %} {% include('concert/header.html.twig') with {'mastPhrase' : "Les artistes 🎤" , 'subMastPhrase' : "On aime on aime pas, c'est les goûts et les couleurs !"} %}
+    {% endblock %}
+
+
+{% block content %}
+
+    {% for artiste in concerts %}
+    <section>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 {% if (loop.index % 2) == 0 %}order-lg-2 {% endif %}">
+                    <div class="p-5">
+                        <img class="img-fluid rounded-circle" src="{{ artiste.image }}" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-6 {% if (loop.index % 2) == 0 %}order-lg-1{% endif %}">
+                    <div class="p-5">
+                        <h2 class="display-4">{{ artiste.artiste }}</h2>
+                        <p>{{artiste.description}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endfor %}
+
+{% endblock %}
