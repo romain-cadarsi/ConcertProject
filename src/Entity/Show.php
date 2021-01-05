@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ShowRepository::class)
- * @ORM\Table(name="`show`")
+ * @ORM\Table(name="`showT`")
  */
 class Show
 {
@@ -35,6 +35,11 @@ class Show
      * @ORM\ManyToMany(targetEntity=Band::class)
      */
     private $band;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $tournee;
 
     public function __construct()
     {
@@ -90,6 +95,18 @@ class Show
     public function removeBand(Band $band): self
     {
         $this->band->removeElement($band);
+
+        return $this;
+    }
+
+    public function getTournee(): ?string
+    {
+        return $this->tournee;
+    }
+
+    public function setTournee(string $tournee): self
+    {
+        $this->tournee = $tournee;
 
         return $this;
     }

@@ -1,0 +1,62 @@
+{% extends 'concert/base.html.twig' %}
+    {% block header %} {% include('concert/components/header.html.twig') with {'mastPhrase' : groupe.name , 'subMastPhrase' : groupe.style } %}
+    {% endblock %}
+
+{% block content %}
+
+    <section class="concertList">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 ">
+                    <div class="p-5">
+                        <img class="img-fluid rounded-circle" src="{{ groupe.picture }}" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="p-5">
+                        <h2 class="display-4">{{ groupe.name }}</h2>
+                        <h3>{{ groupe.style }} - {{ groupe.yearOfCreation | date('d/m/y ') }}</h3>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('bandCreate',{'id': groupe.id}) }}"> Modifier le groupe </a>
+                            <a class="text-danger" href="{{ path('bandDelete',{'id': groupe.id}) }}"> Supprimer le groupe </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="dropdown-divider"></div>
+            <h3> Composé de </h3>
+            {% for member in groupe.member %}
+                <div class="row align-items-center">
+                <div class="col-lg-6 {% if (loop.index % 2) == 0 %}order-lg-2 {% endif %}">
+                    <div class="p-5">
+                        <img class="img-fluid rounded-circle" src="{{ member.picture }}" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-6 {% if (loop.index % 2) == 0 %}order-lg-1{% endif %}">
+                    <div class="p-5">
+                        <h2 class="display-4"><a href="{{ path('memberView',{'id' : member.id}) }}">{{ member.name }}</a></h2>
+                        <h3>{{ member.job }}</h3>
+                    </div>
+                </div>
+                </div>{% endfor %}
+            <div class="dropdown-divider"></div>
+            <h3> Joue prochainement aux concerts :  </h3>
+            {% for concert in nextConcerts %}
+                <div class="row align-items-center">
+                    <div class="col-lg-6 {% if (loop.index % 2) == 0 %}order-lg-2 {% endif %}">
+                        <div class="p-5">
+                            <img class="img-fluid rounded-circle" src="{{ concert.tournee }}" alt="">
+                        </div>
+                    </div>
+                    <div class="col-lg-6 {% if (loop.index % 2) == 0 %}order-lg-1{% endif %}">
+                        <div class="p-5">
+                            <h2 class="display-4">{{ concert.date | date('d/m/y') }} -  {{ concert.hall }}</h2>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+{% endblock %}

@@ -1,3 +1,8 @@
 .align-right{
     text-align: right;
 }
+
+.concertList .img-fluid{
+    max-height: 200px;
+    width: auto;
+}

@@ -1,0 +1,81 @@
+{% extends('concert/base.html.twig') %}
+
+    {% block header %} {% include('concert/components/header.html.twig') with {'mastPhrase' : "Les Concerts Prévus 🎤" , 'subMastPhrase' : "On aime on aime pas, c'est les goûts et les couleurs !"} %}
+    {% endblock %}
+
+
+{% block content %}
+
+
+
+    <section class="concertList">
+        <div class="container">
+            <br>
+            <h3> Concerts Prévus : </h3>
+    {% for concert in newConcerts %}
+        <br>
+        <h3>{{ concert.tournee }}</h3>
+        <h2 class="display-4">{{ concert.date | date('d/m/y') }} -  {{ concert.hall }}</h2>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('concertCreate',{'id': concert.id}) }}"> Modifier le Concert </a>
+            <a class="text-danger" href="{{ path('concertDelete',{'id': concert.id}) }}"> Supprimer le concert </a>
+        {% endif %}
+        <div class="dropdown-divider"></div>
+
+        <h3>Avec : </h3>
+        {% for singleBand in concert.band %}
+            <div class="row align-items-center">
+                <div class="col-lg-6 {% if (loop.index % 2) == 0 %}order-lg-2 {% endif %}">
+                    <div class="p-5">
+                        <img class="img-fluid rounded-circle" src="{{ singleBand.picture }}" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-6 {% if (loop.index % 2) == 0 %}order-lg-1{% endif %}">
+                    <div class="p-5">
+                        <h2 class="display-4"><a href="{{ path('bandView',{'id' : singleBand.id}) }}" >{{ singleBand.name }}</a></h2>
+                        <h3>{{ singleBand.style }}</h3>
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+        </div>
+    </section>
+
+    <section class="concertList">
+        <div class="container">
+            <br>
+            <h3> Concerts Passés : </h3>
+            {% for concert in oldShows %}
+                <br>
+                <h3>{{ concert.tournee }}</h3>
+                <h2 class="display-4">{{ concert.date | date('d/m/y') }} -  {{ concert.hall }}</h2>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('concertCreate',{'id': concert.id}) }}"> Modifier le Concert </a>
+                    <a class="text-danger" href="{{ path('concertDelete',{'id': concert.id}) }}"> Supprimer le concert </a>
+                {% endif %}
+                <div class="dropdown-divider"></div>
+
+                <h3>Avec : </h3>
+                {% for singleBand in concert.band %}
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 {% if (loop.index % 2) == 0 %}order-lg-2 {% endif %}">
+                            <div class="p-5">
+                                <img class="img-fluid rounded-circle" src="{{ singleBand.picture }}" alt="">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 {% if (loop.index % 2) == 0 %}order-lg-1{% endif %}">
+                            <div class="p-5">
+                                <h2 class="display-4"><a href="{{ path('bandView',{'id' : singleBand.id}) }}" >{{ singleBand.name }}</a></h2>
+                                <h3>{{ singleBand.style }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </section>
+
+
+{% endblock %}

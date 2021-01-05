@@ -2,45 +2,78 @@
 
 namespace App\Controller;
 
+use App\Entity\Band;
+use App\Entity\Show;
+use App\Form\ConcertType;
+use App\Form\UserType;
+use App\Repository\ShowRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\User;
 
 class ConcertController extends AbstractController
 {
+
     /**
-     * @Route("/", name="concert")
+     * @Route("/", name="home")
      */
-    public function index(): Response
+    public function concertList(): Response
     {
-        return $this->render('concert/pages/index.html.twig', [
-            'controller_name' => 'ConcertController',
+        $showRepository =  $this->getDoctrine()->getManager()->getRepository(Show::class);
+        $nextShow = $showRepository->nextShows();
+        $oldShows = $showRepository->oldShows();
+        return $this->render('concert/pages/concert/list.html.twig',[
+            "newConcerts" => $nextShow,
+            "oldShows" => $oldShows
         ]);
     }
 
     /**
-     * @Route("/list", name="liste")
+     * @Route("/concert/create", name="concertCreate")
      */
-    public function liste(): Response
+    public function createConcert(Request $request): Response
     {
-        $concerts = [
-            ['artiste' => "Lorie 💛",
-                'description' => "La plus belle",
-                "image" => "image/lorie.jpg"],
-            ["artiste" => "PLK 🐻" ,
-                "description" => "Sah avec son ours il fait des ravages ce jeune",
-                "image" => "image/plk.jpg"],
-            ["artiste" => "Crazy Frog 👽",
-                "description" => "Ta ta, ta talata ta ta ta, ta talata ta tatata tala tala tataaaaa",
-                "image" => "image/crazyFrog.jpg"],
-            ["artiste" => "Aya Nakamura ✌️",
-                "description" => "Chui pas ta catain djadja ",
-                "image" => "image/ayana.webp"]
-    ];
+        if($request->get('id')){
+            $show = $this->getDoctrine()->getManager()->getRepository(Show::class)->find($request->get('id'));
+        }
+        else{
+            $show = new Show();
+        }
 
+        $form = $this->createForm(ConcertType::class,$show);
 
-        return $this->render('concert/pages/list.html.twig', [
-            'concerts' => $concerts,
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+
+            $show = $form->getData();
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($show);
+            $entityManager->flush();
+            return $this->redirectToRoute('home',
+                ['id' => $show->getId()
+                ]);
+        }
+
+        return $this->render('concert/pages/concert/new.html.twig',[
+            "form" => $form->createView()
         ]);
     }
-}
+
+    /**
+     * @Route("/concert/delete/{id}", name="concertDelete" , methods={"GET"})
+     */
+    public function concertDelete($id): Response
+    {
+        $entityManager =  $this->getDoctrine()->getManager();
+        $concertRepository = $this->getDoctrine()->getRepository(Show::class);
+        $concert = $concertRepository->find($id);
+        $entityManager->remove($concert);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('home');
+    }
+
+
+    }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BandRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -41,6 +43,16 @@ class Band
      * @ORM\ManyToOne(targetEntity=Picture::class)
      */
     private $picture;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Member::class, inversedBy="bands")
+     */
+    private $member;
+
+    public function __construct()
+    {
+        $this->member = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -103,6 +115,30 @@ class Band
     public function setPicture(?Picture $picture): self
     {
         $this->picture = $picture;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Member[]
+     */
+    public function getMember(): Collection
+    {
+        return $this->member;
+    }
+
+    public function addMember(Member $member): self
+    {
+        if (!$this->member->contains($member)) {
+            $this->member[] = $member;
+        }
+
+        return $this;
+    }
+
+    public function removeMember(Member $member): self
+    {
+        $this->member->removeElement($member);
 
         return $this;
     }

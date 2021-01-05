@@ -19,6 +19,48 @@ class ShowRepository extends ServiceEntityRepository
         parent::__construct($registry, Show::class);
     }
 
+    public function nextShowsForThisBand($bandId){
+        $conn = $this->getEntityManager()
+            ->getConnection();
+        $sql = 'SELECT show_id FROM `show_band` join showT on id = show_id where band_id = :bandId and date >= CURRENT_TIMESTAMP ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['bandId' => $bandId]);
+        $result = array_values($stmt->fetchFirstColumn());
+        if (!empty($result)) {
+            return $this->findBy(['id' => $result]);
+        } else {
+            return false;
+        }
+    }
+
+    public function nextShows(){
+        $conn = $this->getEntityManager()
+            ->getConnection();
+        $sql = 'SELECT show_id FROM `show_band` join showT on id = show_id WHERE date >= CURRENT_TIMESTAMP ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = array_values($stmt->fetchFirstColumn());
+        if (!empty($result)) {
+            return $this->findBy(['id' => $result]);
+        } else {
+            return false;
+        }
+    }
+
+    public function oldShows(){
+        $conn = $this->getEntityManager()
+            ->getConnection();
+        $sql = 'SELECT show_id FROM `show_band` join showT on id = show_id WHERE date < CURRENT_TIMESTAMP ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = array_values($stmt->fetchFirstColumn());
+        if (!empty($result)) {
+            return $this->findBy(['id' => $result],['date' => 'DESC']);
+        } else {
+            return false;
+        }
+    }
+
     // /**
     //  * @return Show[] Returns an array of Show objects
     //  */

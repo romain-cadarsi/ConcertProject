@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ConcertHallRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -36,6 +38,16 @@ class ConcertHall
      * @ORM\Column(type="string", length=255)
      */
     private $city;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Hall::class, mappedBy="concertHall")
+     */
+    private $Hall;
+
+    public function __construct()
+    {
+        $this->Hall = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -86,6 +98,36 @@ class ConcertHall
     public function setCity(string $city): self
     {
         $this->city = $city;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Hall[]
+     */
+    public function getHall(): Collection
+    {
+        return $this->Hall;
+    }
+
+    public function addHall(Hall $hall): self
+    {
+        if (!$this->Hall->contains($hall)) {
+            $this->Hall[] = $hall;
+            $hall->setConcertHall($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHall(Hall $hall): self
+    {
+        if ($this->Hall->removeElement($hall)) {
+            // set the owning side to null (unless already changed)
+            if ($hall->getConcertHall() === $this) {
+                $hall->setConcertHall(null);
+            }
+        }
 
         return $this;
     }

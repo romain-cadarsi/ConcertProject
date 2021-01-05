@@ -33,8 +33,7 @@ class Hall
     private $available;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ConcertHall::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=ConcertHall::class, inversedBy="Hall")
      */
     private $concertHall;
 
@@ -79,15 +78,19 @@ class Hall
         return $this;
     }
 
-    public function getConcertHall(): ?ConcertHall
-    {
-        return $this->concertHall;
-    }
-
     public function setConcertHall(?ConcertHall $concertHall): self
     {
         $this->concertHall = $concertHall;
 
         return $this;
+    }
+
+    public function getConcertHall(): ?ConcertHall
+    {
+        return $this->concertHall;
+    }
+
+    public function __toString(){
+        return $this->getName();
     }
 }

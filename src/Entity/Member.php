@@ -40,18 +40,18 @@ class Member
     private $birthDate;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Band::class)
-     */
-    private $band;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Picture::class)
      */
     private $picture;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Band::class, mappedBy="member")
+     */
+    private $bands;
+
     public function __construct()
     {
-        $this->band = new ArrayCollection();
+        $this->bands = new ArrayCollection();
     }
 
 
@@ -108,30 +108,6 @@ class Member
         return $this;
     }
 
-    /**
-     * @return Collection|Band[]
-     */
-    public function getBand(): Collection
-    {
-        return $this->band;
-    }
-
-    public function addBand(Band $band): self
-    {
-        if (!$this->band->contains($band)) {
-            $this->band[] = $band;
-        }
-
-        return $this;
-    }
-
-    public function removeBand(Band $band): self
-    {
-        $this->band->removeElement($band);
-
-        return $this;
-    }
-
     public function getPicture(): ?Picture
     {
         return $this->picture;
@@ -140,6 +116,33 @@ class Member
     public function setPicture(?Picture $picture): self
     {
         $this->picture = $picture;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Band[]
+     */
+    public function getBands(): Collection
+    {
+        return $this->bands;
+    }
+
+    public function addBand(Band $band): self
+    {
+        if (!$this->bands->contains($band)) {
+            $this->bands[] = $band;
+            $band->addMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBand(Band $band): self
+    {
+        if ($this->bands->removeElement($band)) {
+            $band->removeMember($this);
+        }
 
         return $this;
     }

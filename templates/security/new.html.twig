@@ -1,0 +1,18 @@
+{% extends 'concert/base.html.twig' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+    {% block header %} {% include('concert/components/header.html.twig') with {'mastPhrase' : "Créez votre compte ! 🎸" , 'subMastPhrase' : "Ou pas on vous oblige pas non plus"} %}
+    {% endblock %}
+
+{% block content %}
+
+    <section>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    {{ form(form) }}
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

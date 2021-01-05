@@ -32,6 +32,13 @@ class Picture
      */
     private $url;
 
+    public function __construct($imageName,$alt)
+    {
+        $this->name = $imageName;
+        $this->alt = $alt;
+        $this->url = "/image/$imageName";
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -72,4 +79,8 @@ class Picture
 
         return $this;
     }
+
+    public function __toString(){
+        return $this->url;
+}
 }

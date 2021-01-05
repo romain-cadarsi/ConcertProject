@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Picture;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -14,16 +15,17 @@ class BandFixtures extends Fixture implements DependentFixtureInterface
         $b1 = new Band();
         $b1->setName('Korn')
             ->setStyle('Metal')
-            ->setPicture('Korn.jpg')
-            ->setCreationYear(new \DateTime(1993))
+            ->setPicture(new Picture('Korn.jpg', 'Korn Band'))
+            ->setYearOfCreation(new \DateTime(1993))
             ->setLastAlbumName('The Nothing')
-            ->addMember($this->getReference(MemberFixtures::KORN_1))
-            ->addMember($this->getReference(MemberFixtures::KORN_2))
-            ->addMember($this->getReference(MemberFixtures::KORN_3))
-            ->addMember($this->getReference(MemberFixtures::KORN_4))
-            ->addMember($this->getReference(MemberFixtures::KORN_5));
+            ->addMember($this->getReference(MemberFixture::KORN_1))
+            ->addMember($this->getReference(MemberFixture::KORN_2))
+            ->addMember($this->getReference(MemberFixture::KORN_3))
+            ->addMember($this->getReference(MemberFixture::KORN_4))
+            ->addMember($this->getReference(MemberFixture::KORN_5));
 
         $manager->persist($b1);
+        $manager->persist($b1->getPicture());
 
         $manager->flush();
     }
@@ -31,7 +33,7 @@ class BandFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return array(
-            MemberFixtures::class,
+            MemberFixture::class,
         );
     }
 }

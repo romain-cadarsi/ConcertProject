@@ -20,7 +20,7 @@
 </head>
 <body>
 <header>
-    {% block menu %}{{ include('concert/menu.html.twig') }}{% endblock %}
+    {% block menu %}{{ include('concert/components/menu.html.twig') }}{% endblock %}
     {% block header %}{% endblock %}
 </header>
 
@@ -37,7 +37,7 @@
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 {% endblock %}
 
-<footer>{% block footer %}{{ include('concert/footer.html.twig') }}{% endblock %}</footer>
+<footer>{% block footer %}{{ include('concert/components/footer.html.twig') }}{% endblock %}</footer>
 
 
 </body>
